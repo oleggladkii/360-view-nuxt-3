@@ -76,7 +76,7 @@ const password = ref('')
 const supabase = useSupabaseClient()
 
 const onSubmit = async () => {
-
+  // TODO: Implement login with email and password
 }
 
 const loginWithGoogle = async () => {
