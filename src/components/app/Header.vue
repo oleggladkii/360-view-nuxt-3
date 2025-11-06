@@ -3,18 +3,15 @@
     <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <div class="shrink-0">
-          <a href="/" class="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
-            My logo
-          </a>
+          <NuxtLink to="/" class="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+            <img src="/assets/images/logo.png" alt="Logo" class="inline-block h-8 w-auto align-middle mr-2" />
+          </NuxtLink>
         </div>
 
         <div class="flex items-center gap-6">
-          <a
-            href="/about"
-            class="text-gray-700 hover:text-gray-900 font-medium transition-colors"
-          >
+          <NuxtLink to="/about" class="text-gray-700 hover:text-gray-900 font-medium transition-colors">
             About
-          </a>
+          </NuxtLink>
 
           <template v-if="!isLoggedIn">
             <button
@@ -26,12 +23,9 @@
             </button>
           </template>
           <template v-else>
-            <a
-              href="/profile"
-              class="text-gray-700 hover:text-gray-900 font-medium transition-colors"
-            >
+            <NuxtLink to="/profile" class="text-gray-700 hover:text-gray-900 font-medium transition-colors">
               Profile
-            </a>
+            </NuxtLink>
             <div class="shrink-0">
               <button
                 type="button"
