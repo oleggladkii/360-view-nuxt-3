@@ -72,7 +72,7 @@ import { useAuthStore } from '~/stores/auth';
 import { useUiStore } from '~/stores/ui';
 
 const auth = useAuthStore();
-const { isLoggedIn, user } = storeToRefs(auth);
+const { user, isLoggedIn } = storeToRefs(auth);
 
 const ui = useUiStore();
 
@@ -80,7 +80,7 @@ const userInitial = computed(() => {
   if (!user.value) {
     return 'U'
   };
-  return user.value.name?.charAt(0).toUpperCase() || 'U';
+  return user.value.user_metadata?.full_name?.charAt(0).toUpperCase() || 'U';
 });
 
 const isProfileMenuOpen = ref<boolean>(false);

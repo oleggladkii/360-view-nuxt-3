@@ -20,6 +20,17 @@ yarn install
 bun install
 ```
 
+## Environment Variables
+
+Create a `.env` file in the project root before running the app. At minimum it must provide your Supabase project credentials:
+
+```
+SUPABASE_URL="https://your-project-id.supabase.co"
+SUPABASE_KEY="public-anon-key"
+```
+
+Restart the dev server whenever you change environment variables.
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:

@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 interface Props {
-  modelValue: boolean
+  modelValue?: boolean
   closeOnEsc?: boolean
   maxWidthClass?: string
 }
@@ -38,8 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'close'): void
-  (e: 'open'): void
+  (e: 'close' | 'open'): void
 }>()
 
 const isOpen = computed({

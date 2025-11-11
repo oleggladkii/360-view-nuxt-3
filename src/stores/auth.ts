@@ -1,32 +1,89 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-export interface AuthUser {
-  id: string
-  name?: string
-  email?: string
-  avatar_url?: string
-}
+type EmailCredentials = {
+  email: string;
+  password: string;
+};
 
 export const useAuthStore = defineStore(
-  'auth',
+  "auth",
   () => {
-    const supabase = useSupabaseClient()
+    const supabase = useSupabaseClient();
+    const supabaseUser = useSupabaseUser();
 
-    const isLoggedIn = ref<boolean>(false)
-    const user = ref<AuthUser | null>(null)
+    const user = ref<SupabaseUser | null>(supabaseUser.value as SupabaseUser | null);
+    const isLoggedIn = computed(() => !!user.value);
 
-    const setUser = (data: AuthUser | null) => {
-      user.value = data
-      isLoggedIn.value = !!data
-    }
+    const setUser = (data: SupabaseUser | null) => {
+      user.value = data;
+    };
 
     const logout = async () => {
-      await supabase.auth.signOut()
-      setUser(null)
-    }
+      await supabase.auth.signOut();
+      setUser(null);
+    };
 
-    return { isLoggedIn, user, logout }
-  }
-)
+    const loginWithEmail = async ({ email, password }: EmailCredentials) => {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
+      if (error) {
+        throw error;
+      }
 
+      setUser(data.user ?? null);
+
+      return data;
+    };
+
+    const registerWithEmail = async ({ email, password }: EmailCredentials) => {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+
+      if (error) {
+        throw error;
+      }
+
+      setUser(data.user ?? null);
+
+      return data;
+    };
+
+    const resetPassword = async (email: string) => {
+      const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+
+      if (error) {
+        throw error;
+      }
+    };
+
+    const loginWithGoogle = async () => {
+      const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+      });
+
+      if (error) {
+        console.error(error);
+        throw error;
+      }
+    };
+
+    const init = () => {
+      user.value = supabaseUser.value as SupabaseUser | null;
+    };
+
+    return {
+      isLoggedIn,
+      user,
+      setUser,
+      logout,
+      loginWithEmail,
+      registerWithEmail,
+      resetPassword,
+      loginWithGoogle,
+      init,
+    };
+  },
+);
