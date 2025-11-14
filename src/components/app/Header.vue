@@ -31,7 +31,23 @@
               >
                 <span class="absolute -inset-1.5"/>
                 <span class="sr-only">Open user menu</span>
+                <img
+                  v-if="avatarUrl && isProxiedUrl"
+                  :src="avatarUrl"
+                  :alt="userInitial"
+                  class="h-8 w-8 rounded-full border-2 border-white object-cover"
+                >
+                <NuxtImg
+                  v-else-if="avatarUrl"
+                  :src="avatarUrl"
+                  :alt="userInitial"
+                  width="32"
+                  height="32"
+                  class="h-8 w-8 rounded-full border-2 border-white object-cover"
+                  fit="cover"
+                />
                 <div
+                  v-else
                   class="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center text-white font-medium"
                 >
                   {{ userInitial }}
@@ -43,11 +59,18 @@
                 class="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg focus:outline-none z-50"
               >
                 <NuxtLink
-                  to="/profile"
+                  to="/profile?tab=settings"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   @click="closeProfileMenu"
                 >
-                  My Profile
+                  Profile
+                </NuxtLink>
+                <NuxtLink
+                  to="/profile?tab=tours"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  @click="closeProfileMenu"
+                >
+                  Tours
                 </NuxtLink>
                 <button
                   type="button"
@@ -75,6 +98,30 @@ const auth = useAuthStore();
 const { user, isLoggedIn } = storeToRefs(auth);
 
 const ui = useUiStore();
+
+const { data: profileData, refresh } = await useFetch<{ profile: { avatar_url: string | null } }>("/api/profile", {
+  headers: useRequestHeaders(["cookie"]),
+  server: false,
+  lazy: true,
+  immediate: false,
+});
+
+watch(isLoggedIn, (loggedIn) => {
+  if (loggedIn && !profileData.value) {
+    refresh();
+  }
+}, { immediate: true });
+
+const { getProxiedImageUrl } = useImageProxy();
+
+const avatarUrl = computed(() => {
+  const url = profileData.value?.profile?.avatar_url || null;
+  return getProxiedImageUrl(url);
+});
+
+const isProxiedUrl = computed(() => {
+  return avatarUrl.value?.startsWith("/api/image-proxy") ?? false;
+});
 
 const userInitial = computed(() => {
   if (!user.value) {
