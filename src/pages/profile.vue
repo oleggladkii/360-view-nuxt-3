@@ -25,12 +25,12 @@
             ]"
             @click="navigateToTab('tours')"
           >
-            Tours ({{ tours.length }})
+            Tours
           </button>
         </nav>
       </aside>
       <div class="flex-1">
-        <ProfileTours v-if="activeTab === 'tours'" :tours="tours" />
+        <ProfileTours v-if="activeTab === 'tours'" />
         <ProfileEdit
           v-if="activeTab === 'settings'"
           :initial-values="profileInitialValues"
@@ -45,9 +45,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-import ProfileEdit from "@/components/profile/ProfileEdit.vue";
-import ProfileTours from "@/components/profile/ProfileTours.vue";
-import type { Profile, ProfileFormValues } from "@/interfaces/profile";
+import type { Profile, ProfileFormValues } from "~/interfaces/Profile";
 
 const toast = useToast();
 
@@ -71,18 +69,6 @@ const activeTab = computed<TabId>(() => {
 });
 
 const isSavingProfile = ref(false);
-const tours = ref([
-  {
-    id: "tour-1",
-    title: "Penthouse Downtown",
-    description: "An immersive tour highlighting the downtown skyline views.",
-  },
-  {
-    id: "tour-2",
-    title: "Coastal Retreat",
-    description: "A walk-through of a beachfront property with outdoor amenities.",
-  },
-]);
 
 const { data: profileData, error: profileError } = await useFetch<{ profile: Profile }>("/api/profile", {
   headers: useRequestHeaders(["cookie"]),

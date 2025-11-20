@@ -38,7 +38,6 @@ export default defineNuxtConfig({
   },
   toast: {
     settings: {
-      rtl: true,
       position: 'topRight',
       timeout: 5000,
       progressBar: false,

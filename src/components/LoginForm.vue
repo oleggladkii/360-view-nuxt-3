@@ -11,7 +11,7 @@
       </div>
 
       <div class="mt-8">
-        <LoginEmailForm
+        <AuthLoginEmailForm
           v-if="activeForm === 'login'"
           :loading="loading"
           :error="formError"
@@ -20,7 +20,7 @@
           @switch-to-reset="switchForm('reset')"
         />
 
-        <RegistrationEmailForm
+        <AuthRegistrationEmailForm
           v-else-if="activeForm === 'register'"
           :loading="loading"
           :error="formError"
@@ -28,7 +28,7 @@
           @switch-to-login="switchForm('login')"
         />
 
-        <ResetPasswordForm
+        <AuthResetPasswordForm
           v-else
           :loading="loading"
           :error="formError"
@@ -78,9 +78,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import LoginEmailForm from "~/components/auth/LoginEmailForm.vue";
-import RegistrationEmailForm from "~/components/auth/RegistrationEmailForm.vue";
-import ResetPasswordForm from "~/components/auth/ResetPasswordForm.vue";
 import { useUiStore } from "~/stores/ui";
 
 type ActiveForm = "login" | "register" | "reset";

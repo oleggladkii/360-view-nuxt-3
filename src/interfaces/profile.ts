@@ -15,4 +15,3 @@ export interface Profile {
 }
 
 export type ProfileFormValues = Omit<Profile, "id" | "created_at" | "updated_at" | "provider" | "raw_metadata">;
-

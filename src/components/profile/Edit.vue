@@ -53,7 +53,7 @@
               type="text"
               class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
               autocomplete="name"
-            />
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="profile-email">
@@ -66,7 +66,7 @@
               disabled
               class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
               autocomplete="email"
-            />
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="profile-phone">
@@ -78,7 +78,7 @@
               type="tel"
               class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
               autocomplete="tel"
-            />
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="profile-website">
@@ -90,7 +90,7 @@
               type="url"
               class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
               autocomplete="url"
-            />
+            >
           </div>
         </div>
         <h2 class="mt-8 mb-4 text-lg font-semibold text-gray-700">Socials</h2>
@@ -105,7 +105,7 @@
                 v-model="form.instagram"
                 type="text"
                 class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
-              />
+              >
             </div>
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="profile-facebook">
@@ -116,7 +116,7 @@
                 v-model="form.facebook"
                 type="text"
                 class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
-              />
+              >
             </div>
             <div class="flex flex-col gap-2">
               <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="profile-linkedin">
@@ -127,7 +127,7 @@
                 v-model="form.linkedin"
                 type="text"
                 class="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
-              />
+              >
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
 
-import type { ProfileFormValues } from "@/interfaces/profile";
+import type { ProfileFormValues } from "~/interfaces/Profile";
 
 const props = defineProps<{
   initialValues: ProfileFormValues;

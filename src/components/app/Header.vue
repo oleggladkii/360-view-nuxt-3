@@ -9,8 +9,11 @@
         </div>
 
         <div class="flex items-center gap-6">
+          <NuxtLink to="/tours" class="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+            Tours
+          </NuxtLink>
           <NuxtLink to="/about" class="text-gray-700 hover:text-gray-900 font-medium transition-colors">
-            About
+            About Us
           </NuxtLink>
 
           <template v-if="!isLoggedIn">

@@ -13,7 +13,7 @@
         <div class="lg:flex lg:items-center lg:gap-12">
           <div class="max-w-xl lg:flex-1">
             <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
-              Virtual Real Estate Tours 
+              Virtual City 360° Tours
             </h1>
             <p class="mt-6 text-lg text-gray-700">
               Build your own virtual tours or discover existing ones.
@@ -61,7 +61,7 @@ defineOptions({
 })
 
 useHead({
-  title: 'Virtual Real Estate Tours',
+  title: 'Virtual City 360° Tours',
 })
 
 const ui = useUiStore()
