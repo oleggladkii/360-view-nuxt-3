@@ -1,143 +1,97 @@
 <template>
-  <section class="min-h-screen bg-gray-50">
-    <div v-if="tour" class="flex h-screen overflow-hidden">
-      <!-- Left Column: Video + Description -->
-      <div class="flex w-2/3 flex-col overflow-y-auto">
-        <!-- Video Player -->
-        <div class="relative aspect-video w-full bg-gray-800">
-          <video
-            v-if="tour.preview_url"
-            :src="tour.preview_url"
-            controls
-            class="h-full w-full object-cover"
+  <div class="min-h-screen bg-white pt-[64px]">
+    <div v-if="tour" class="relative">
+      <!-- Hero Section -->
+      <div class="relative h-[70vh] w-full overflow-hidden">
+        <div class="absolute inset-0 bg-gray-900/40 z-10" />
+        <img
+          :src="tour.preview_url || 'https://placehold.co/1920x1080?text=No+Preview'"
+          :alt="tour.name"
+          class="h-full w-full object-cover"
+        />
+        
+        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+          <span 
+            class="mb-4 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium backdrop-blur-md"
+            :class="tour.time_of_day === 'night' ? 'bg-indigo-900/80 text-indigo-100' : 'bg-amber-100/80 text-amber-800'"
           >
-            Your browser does not support the video tag.
-          </video>
-          <div v-else class="flex h-full w-full items-center justify-center bg-gray-800 text-gray-400">
-            <div class="text-center">
-              <svg
-                class="mx-auto h-12 w-12"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-              <p class="mt-2 text-sm">No video available</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Description Panel -->
-        <div class="flex-1 bg-white p-6">
-          <h1 class="text-2xl font-semibold text-gray-900">{{ tour.name }}</h1>
-
-          <!-- Author Info -->
-          <div class="mt-4 flex items-center gap-3">
-            <div class="h-10 w-10 shrink-0 rounded-full bg-gray-300" />
-            <div>
-              <p class="text-sm font-medium text-gray-900">Author</p>
-              <p class="text-xs text-gray-500">Realtor</p>
-            </div>
+            {{ tour.time_of_day === 'night' ? '🌙 Night Tour' : '☀️ Day Tour' }}
+          </span>
+          
+          <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl drop-shadow-lg">
+            {{ tour.name }}
+          </h1>
+          
+          <div class="mt-4 flex items-center gap-2 text-gray-200 drop-shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.62.829.799 1.654 1.381 2.274 1.766.311.192.571.337.757.433.093.048.187.095.281.14l.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />
+            </svg>
+            <span class="text-lg">{{ tour.city }}, {{ tour.country }}</span>
           </div>
 
-          <!-- Stats -->
-          <div class="mt-4 flex flex-wrap gap-6 text-sm text-gray-600">
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
+          <div class="mt-10">
+            <NuxtLink
+              :to="`/tours/${tour.id}/view`"
+              class="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-white px-8 py-4 text-lg font-bold text-gray-900 transition-all hover:bg-gray-50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+            >
+              <span class="relative z-10">Start 360° Tour</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 relative z-10 transition-transform group-hover:translate-x-1">
+                <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
               </svg>
-              <span>{{ tour.tour_date ? new Date(tour.tour_date).toLocaleDateString() : "Not specified" }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-              <span class="capitalize">{{ tour.time_of_day || "Not specified" }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>{{ tour.views_count || 0 }} views</span>
-            </div>
+            </NuxtLink>
           </div>
-
-          <!-- Description Text -->
-          <div class="mt-6">
-            <p class="text-sm leading-relaxed text-gray-700">
-              {{ tour.description || "No description available." }}
-            </p>
-            <p v-if="tour.city || tour.country" class="mt-4 text-sm text-gray-600">
-              <span class="font-medium">Location:</span>
-              {{ tour.city }}{{ tour.country ? `, ${tour.country}` : "" }}
-            </p>
-          </div>
-
-          <!-- Edit Button (for current user) -->
-          <ClientOnly>
-            <div v-if="isCurrentUser" class="mt-6">
-              <NuxtLink
-                :to="`/tours/${tour.id}/edit`"
-                class="inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
-              >
-                Edit Tour
-              </NuxtLink>
-            </div>
-          </ClientOnly>
         </div>
       </div>
 
-      <!-- Right Column: Map -->
-      <div class="w-1/3 bg-gray-200">
-        <div class="relative h-full w-full">
-          <!-- Map placeholder -->
-          <div class="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-            <div class="text-center">
-              <svg
-                class="mx-auto h-16 w-16"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                />
-              </svg>
-              <p class="mt-2 text-sm">Map view</p>
-              <p v-if="tour.gpx_path" class="mt-1 text-xs text-gray-400">
-                GPX: {{ tour.gpx_path }}
-              </p>
+      <!-- Details Section -->
+      <div class="mx-auto max-w-4xl px-6 py-16">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-8">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">About this tour</h2>
+              <div class="mt-4 text-lg leading-relaxed text-gray-600" v-html="tour.description || 'No description provided for this tour.'" />
             </div>
+
+            <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl">
+              <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                  <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Created by</p>
+                <p class="text-base text-gray-600">Tour Creator</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar Stats -->
+          <div class="space-y-6">
+            <div class="rounded-2xl bg-gray-50 p-6">
+              <h3 class="font-semibold text-gray-900 mb-4">Tour Details</h3>
+              <dl class="space-y-4">
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Date</dt>
+                  <dd class="font-medium text-gray-900">{{ tour.tour_date ? new Date(tour.tour_date).toLocaleDateString() : 'N/A' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Views</dt>
+                  <dd class="font-medium text-gray-900">{{ tour.views_count || 0 }}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <ClientOnly>
+              <div v-if="isCurrentUser" class="flex flex-col gap-3">
+                <NuxtLink
+                  :to="`/tours/${tour.id}/edit`"
+                  class="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+                >
+                  Edit Tour
+                </NuxtLink>
+              </div>
+            </ClientOnly>
           </div>
         </div>
       </div>
@@ -145,16 +99,11 @@
 
     <div v-else class="flex min-h-screen items-center justify-center">
       <div class="text-center">
-        <p class="text-gray-500">Tour not found.</p>
-        <NuxtLink
-          to="/profile?tab=tours"
-          class="mt-4 inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
-        >
-          Back to Tours
-        </NuxtLink>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4" />
+        <p class="text-gray-500">Loading tour...</p>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -162,6 +111,7 @@ import type { Tour } from "~/interfaces/Tour";
 
 const route = useRoute();
 const toast = useToast();
+const auth = useAuthStore();
 
 useHead({
   title: "Tour Details",
@@ -173,14 +123,12 @@ const { data: tour, error } = await useFetch<Tour>(`/api/tours/${tourId.value}/v
   headers: useRequestHeaders(["cookie"]),
 });
 
-const auth = useAuthStore();
-
 if (error.value) {
   console.error("Failed to load tour:", error.value);
   if (import.meta.client) {
     toast.error({ message: "Failed to load tour. Please try again." });
   }
-  await navigateTo("/profile?tab=tours");
+  await navigateTo("/tours");
 }
 
 const isCurrentUser = computed(() => {

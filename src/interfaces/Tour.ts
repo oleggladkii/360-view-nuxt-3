@@ -10,7 +10,8 @@ export interface Tour {
   views_count: number;       
   country: string;    
   city: string;       
-  gpx_path: string;   
+  gpx_path: string;
+  video_url?: string;   
   created_at: string;        
   updated_at: string;        
 }

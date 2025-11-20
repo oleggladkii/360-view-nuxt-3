@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
     tour_date?: string;
     time_of_day?: "day" | "night";
     gpx_path?: string;
+    video_url?: string;
   }>(event);
 
   const client = await serverSupabaseClient(event);

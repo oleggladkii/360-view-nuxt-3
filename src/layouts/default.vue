@@ -1,6 +1,6 @@
 <template>
 <div>
-    <AppHeader />
+    <AppHeader v-if="showHeader" />
     <slot />
     <LoginForm />
 </div>
@@ -10,6 +10,11 @@
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 const route = useRoute()
 const auth = useAuthStore()
+
+const showHeader = computed(() => {
+  return !route.path.match(/^\/tours\/[^/]+\/view$/)
+})
+
 watch(
   () => route.query,
   (newQuery) => {

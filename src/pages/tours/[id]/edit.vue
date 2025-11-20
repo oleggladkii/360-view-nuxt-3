@@ -17,6 +17,7 @@
         mode="edit"
         :initial-data="tourData"
         :is-submitting="isSubmitting"
+        :tour-id="tourId"
         @submit="handleSubmit"
       />
     </div>
@@ -46,6 +47,9 @@ const tourData = ref<{
   tour_date?: string;
   time_of_day?: "day" | "night" | null;
   gpx_path?: string;
+  video_url?: string;
+  country?: string;
+  city?: string;
 }>({});
 const tourId = computed(() => route.params.id as string);
 
@@ -64,6 +68,9 @@ const loadTour = async () => {
       tour_date: tour.tour_date || "",
       time_of_day: (tour.time_of_day === "day" || tour.time_of_day === "night" ? tour.time_of_day : null) as "day" | "night" | null,
       gpx_path: tour.gpx_path || "",
+      video_url: tour.video_url || "",
+      country: tour.country || "",
+      city: tour.city || "",
     };
   } catch (error) {
     console.error("Failed to load tour:", error);
