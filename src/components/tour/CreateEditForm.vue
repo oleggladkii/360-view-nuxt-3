@@ -179,6 +179,9 @@
           <p v-if="v$.preview_url.$error" class="text-xs text-red-600">
             {{ previewUrlErrorMessage }}
           </p>
+          <div v-if="form.preview_url" class="mt-2">
+            <img :src="form.preview_url" alt="Preview" class="h-48 w-full rounded-md object-cover" />
+          </div>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -239,6 +242,9 @@
           <p v-if="v$.video_url.$error" class="text-xs text-red-600">
             {{ videoUrlErrorMessage }}
           </p>
+          <div v-if="form.video_url" class="mt-2">
+            <video :src="form.video_url" controls class="h-48 w-full rounded-md bg-black" />
+          </div>
         </div>
       </div>
     </div>

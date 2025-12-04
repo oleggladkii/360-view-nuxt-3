@@ -16,6 +16,10 @@ export default defineNuxtConfig({
     'nuxt-toast',
     '@nuxt/image',
   ],
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
+  },
   image: {
     domains: ['lh3.googleusercontent.com'],
   },

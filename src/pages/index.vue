@@ -1,17 +1,16 @@
 <template>
   <div>
     <section class="relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 text-gray-900 min-h-screen overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none" style="z-index: 0;">
-        <div class="absolute top-0 left-0 h-96 w-96 bg-orange-400 rounded-full opacity-60 blur-2xl" style="transform: translate(-25%, -25%);"/>
-        <div class="absolute bottom-0 left-0 h-[32rem] w-[32rem] bg-blue-200 rounded-full opacity-50 blur-2xl" style="transform: translate(-25%, 25%);"/>
-        <div class="absolute top-1/2 right-0 h-80 w-80 bg-purple-300 rounded-full opacity-40 blur-2xl" style="transform: translate(25%, -50%);"/>
-        <div class="absolute top-0 right-1/4 h-64 w-64 bg-pink-300 rounded-full opacity-45 blur-2xl" style="transform: translate(50%, -30%);"/>
-        <div class="absolute bottom-1/4 right-1/3 h-72 w-72 bg-indigo-300 rounded-full opacity-35 blur-2xl" style="transform: translate(30%, 20%);"/>
-      </div>
+      <!-- Babylon.js Background -->
+      <canvas 
+        ref="bjsCanvas" 
+        class="absolute inset-0 w-full h-full outline-none" 
+        style="z-index: 0;"
+      />
 
-      <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32 min-h-screen flex items-center" style="z-index: 1;">
-        <div class="lg:flex lg:items-center lg:gap-12">
-          <div class="max-w-xl lg:flex-1">
+      <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32 min-h-screen flex items-center" style="z-index: 1; pointer-events: none;">
+        <div class="lg:flex lg:gap-12 w-full">
+          <div class="max-w-xl lg:flex-1 pointer-events-auto">
             <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
               Virtual City 360° Tours
             </h1>
@@ -32,17 +31,6 @@
                   </svg>
                 </button>
               </template>
-            </div>
-          </div>
-
-          <div class="mt-12 lg:mt-0 lg:flex-1 relative">
-            <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                :src="heroImage"
-                alt="Modern houses"
-                class="w-full h-auto object-cover"
-              >
-              <div class="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent"/>
             </div>
           </div>
         </div>
@@ -130,7 +118,19 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useUiStore } from '~/stores/ui'
-import heroImage from '~/assets/images/hero-section.webp'
+import {
+  Engine,
+  Scene,
+  Color4,
+  ArcRotateCamera,
+  Vector3,
+  HemisphericLight,
+  StandardMaterial,
+  MeshBuilder,
+  Color3,
+  Texture
+} from '@babylonjs/core'
+import heroSectionBall from '~/assets/images/hero-section-ball.jpg'
 
 defineOptions({
   name: 'IndexPage'
@@ -146,4 +146,94 @@ const auth = useAuthStore()
 const openLogin = () => {
   ui.openLoginModal();
 };
+
+const bjsCanvas = ref<HTMLCanvasElement | null>(null);
+let engine: Engine | null = null;
+let scene: Scene | null = null;
+
+onMounted(() => {
+  if (bjsCanvas.value) {
+    engine = new Engine(bjsCanvas.value, true);
+
+    const createScene = function () {
+      const scene = new Scene(engine!);
+      scene.clearColor = new Color4(0, 0, 0, 0);
+      
+      const camera = new ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 5, new Vector3(-3, 0, 0), scene);
+      camera.attachControl(bjsCanvas.value, true);
+      
+      camera.inputs.removeByType("ArcRotateCameraMouseWheelInput");
+      camera.panningSensibility = 0;
+
+      camera.lowerRadiusLimit = 3;
+      camera.upperRadiusLimit = 7;
+      
+      const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+      light.intensity = 0.7;
+
+      const blobMaterial = new StandardMaterial("blobMat", scene);
+      blobMaterial.disableLighting = true;
+      blobMaterial.alpha = 0.4;
+
+      const orangeBlob = MeshBuilder.CreateSphere("orangeBlob", {diameter: 8}, scene);
+      orangeBlob.position = new Vector3(-7, 3, 5);
+      const orangeMat = blobMaterial.clone("orange");
+      orangeMat.emissiveColor = new Color3(1, 0.6, 0.2);
+      orangeBlob.material = orangeMat;
+
+      const blueBlob = MeshBuilder.CreateSphere("blueBlob", {diameter: 10}, scene);
+      blueBlob.position = new Vector3(-8, -4, 2);
+      const blueMat = blobMaterial.clone("blue");
+      blueMat.emissiveColor = new Color3(0.2, 0.5, 1);
+      blueBlob.material = blueMat;
+
+      const pinkBlob = MeshBuilder.CreateSphere("pinkBlob", {diameter: 12}, scene);
+      pinkBlob.position = new Vector3(5, 2, 8);
+      const pinkMat = blobMaterial.clone("pink");
+      pinkMat.emissiveColor = new Color3(0.9, 0.2, 0.8);
+      pinkBlob.material = pinkMat;
+
+      const sphere = MeshBuilder.CreateSphere("sphere", {diameter: 2.8, segments: 32}, scene);
+      sphere.position = new Vector3(-1, -0.5, 2);
+
+      const sphereMat = new StandardMaterial("sphereMat", scene);
+      
+      const texture = new Texture(heroSectionBall, scene);
+      
+      sphereMat.diffuseColor = new Color3(0, 0, 0);
+      sphereMat.emissiveTexture = texture;
+      
+      texture.vScale = -1; 
+      
+      sphere.material = sphereMat;
+
+      scene.registerBeforeRender(function () {
+        sphere.rotation.y -= 0.002;
+        orangeBlob.position.y = 3 + Math.sin(Date.now() * 0.0005) * 0.5;
+        blueBlob.position.y = -4 + Math.cos(Date.now() * 0.0006) * 0.5;
+      });
+
+      return scene;
+    };
+
+    scene = createScene();
+
+    engine.runRenderLoop(() => {
+      scene?.render();
+    });
+
+    const handleResize = () => {
+      engine?.resize();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", handleResize);
+      if (engine) {
+        engine.dispose();
+      }
+    });
+  }
+});
 </script>
