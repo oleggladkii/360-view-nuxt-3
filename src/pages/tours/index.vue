@@ -1,18 +1,18 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header Section -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
+    <section class="relative overflow-hidden bg-gradient-to-br from-orange-400 via-pink-400 to-blue-500">
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 right-0 h-96 w-96 bg-blue-200 rounded-full opacity-30 blur-3xl" style="transform: translate(25%, -25%);"/>
-        <div class="absolute bottom-0 left-0 h-80 w-80 bg-purple-200 rounded-full opacity-30 blur-3xl" style="transform: translate(-25%, 25%);"/>
+        <div ref="heroBlob1" class="absolute top-0 right-0 h-96 w-96 bg-blue-200 rounded-full opacity-30 blur-3xl" style="transform: translate(25%, -25%);"/>
+        <div ref="heroBlob2" class="absolute bottom-0 left-0 h-80 w-80 bg-purple-200 rounded-full opacity-30 blur-3xl" style="transform: translate(-25%, 25%);"/>
       </div>
 
       <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32">
         <div class="max-w-3xl">
-          <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+          <h1 ref="heroTitle" class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
             Explore Virtual Tours
           </h1>
-          <p class="mt-6 text-xl text-gray-600">
+          <p ref="heroDescription" class="mt-6 text-xl text-white/90">
             Discover cities from a whole new perspective through immersive 360° virtual tours.
           </p>
         </div>
@@ -90,6 +90,10 @@
 import { ref, computed, onMounted } from 'vue';
 import type { Tour } from '~/interfaces/Tour';
 import TourCard from '~/components/tour/TourCard.vue';
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 useHead({
   title: 'Explore Tours - Virtual City 360',
@@ -100,6 +104,12 @@ const loading = ref(true);
 const tours = ref<Tour[]>([]);
 const searchQuery = ref('');
 const activeFilter = ref<'all' | 'day' | 'night'>('all');
+
+// Template refs for animations
+const heroTitle = ref<HTMLElement | null>(null)
+const heroDescription = ref<HTMLElement | null>(null)
+const heroBlob1 = ref<HTMLElement | null>(null)
+const heroBlob2 = ref<HTMLElement | null>(null)
 
 const filterOptions = [
   { label: 'All', value: 'all' },
@@ -149,6 +159,64 @@ const filteredTours = computed(() => {
 
 onMounted(() => {
   fetchTours();
+
+  // Hero Section Animations (matching about page)
+  if (heroTitle.value) {
+    // Split title into words for stagger animation
+    const words = heroTitle.value.textContent?.split(' ') || []
+    heroTitle.value.innerHTML = words.map(word => `<span class="inline-block" style="opacity: 0;">${word}</span>`).join(' ')
+    
+    gsap.to(heroTitle.value.querySelectorAll('span'), {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: heroTitle.value,
+        start: 'top 80%',
+      }
+    })
+  }
+
+  if (heroDescription.value) {
+    gsap.from(heroDescription.value, {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      delay: 0.5,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: heroDescription.value,
+        start: 'top 80%',
+      }
+    })
+  }
+
+  // Parallax effect for background blobs
+  if (heroBlob1.value) {
+    gsap.to(heroBlob1.value, {
+      y: 200,
+      scrollTrigger: {
+        trigger: heroBlob1.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.5,
+      }
+    })
+  }
+
+  if (heroBlob2.value) {
+    gsap.to(heroBlob2.value, {
+      y: -150,
+      scrollTrigger: {
+        trigger: heroBlob2.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 2,
+      }
+    })
+  }
 });
 </script>
 

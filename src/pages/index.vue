@@ -11,10 +11,10 @@
       <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32 min-h-screen flex items-center" style="z-index: 1; pointer-events: none;">
         <div class="lg:flex lg:gap-12 w-full">
           <div class="max-w-xl lg:flex-1 pointer-events-auto">
-            <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+            <h1 ref="heroTitle" class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
               Virtual City 360° Tours
             </h1>
-            <p class="mt-6 text-lg text-gray-700">
+            <p ref="heroDescription" class="mt-6 text-lg text-gray-700">
               Build your own virtual tours or discover existing ones.
             </p>
 
@@ -39,7 +39,7 @@
 
     <!-- How it works Section -->
     <section class="bg-white py-24 lg:py-32">
-      <div class="mx-auto max-w-7xl px-6">
+      <div ref="howItWorksSection" class="mx-auto max-w-7xl px-6">
         <div class="text-center mb-16">
           <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
             How it works
@@ -131,6 +131,10 @@ import {
   Texture
 } from '@babylonjs/core'
 import heroSectionBall from '~/assets/images/hero-section-ball.jpg'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 defineOptions({
   name: 'IndexPage'
@@ -148,10 +152,45 @@ const openLogin = () => {
 };
 
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
+const heroTitle = ref<HTMLElement | null>(null);
+const heroDescription = ref<HTMLElement | null>(null);
+const howItWorksSection = ref<HTMLElement | null>(null);
+
 let engine: Engine | null = null;
 let scene: Scene | null = null;
 
 onMounted(() => {
+  // GSAP Scroll Animations
+  if (heroTitle.value && heroDescription.value) {
+    // Hero text slides up when scrolling down
+    gsap.to([heroTitle.value, heroDescription.value], {
+      y: -100,
+      opacity: 0,
+      scrollTrigger: {
+        trigger: heroTitle.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+  }
+
+  if (howItWorksSection.value) {
+    // "How it works" section fades in from bottom
+    gsap.from(howItWorksSection.value, {
+      y: 100,
+      opacity: 0,
+      duration: 1,
+      scrollTrigger: {
+        trigger: howItWorksSection.value,
+        start: 'top 80%',
+        end: 'top 50%',
+        scrub: 1,
+      }
+    });
+  }
+
+  // Babylon.js setup
   if (bjsCanvas.value) {
     engine = new Engine(bjsCanvas.value, true);
 

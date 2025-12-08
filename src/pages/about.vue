@@ -1,18 +1,18 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
+    <section class="relative overflow-hidden bg-gradient-to-br from-orange-400 via-pink-400 to-blue-500">
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-0 right-0 h-96 w-96 bg-blue-200 rounded-full opacity-30 blur-3xl" style="transform: translate(25%, -25%);"/>
-        <div class="absolute bottom-0 left-0 h-80 w-80 bg-purple-200 rounded-full opacity-30 blur-3xl" style="transform: translate(-25%, 25%);"/>
+        <div ref="heroBlob1" class="absolute top-0 right-0 h-96 w-96 bg-blue-200 rounded-full opacity-30 blur-3xl" style="transform: translate(25%, -25%);"/>
+        <div ref="heroBlob2" class="absolute bottom-0 left-0 h-80 w-80 bg-purple-200 rounded-full opacity-30 blur-3xl" style="transform: translate(-25%, 25%);"/>
       </div>
 
       <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32">
         <div class="max-w-3xl">
-          <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            About Virtual City 360° Tours
+          <h1 ref="heroTitle" class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+           About Virtual City 360° Tours
           </h1>
-          <p class="mt-6 text-xl text-gray-600">
+          <p ref="heroDescription" class="mt-6 text-xl text-white/90">
             Discover cities from a whole new perspective through immersive 360° virtual tours.
           </p>
         </div>
@@ -23,8 +23,8 @@
     <section class="bg-white py-24">
       <div class="mx-auto max-w-7xl px-6">
         <div class="max-w-3xl mx-auto">
-          <h2 class="text-3xl font-bold text-gray-900 mb-8">Our Mission</h2>
-          <div class="prose prose-lg max-w-none text-gray-600 space-y-6">
+          <h2 ref="missionTitle" class="text-3xl font-bold text-gray-900 mb-8">Our Mission</h2>
+          <div ref="missionContent" class="prose prose-lg max-w-none text-gray-600 space-y-6">
             <p>
               Virtual City 360° Tours is a platform that enables users to create, share, and explore immersive virtual tours of cities around the world. Whether you're a traveler documenting your journey, a local showcasing your city, or someone exploring destinations from home, our platform brings the world to you in stunning 360° detail.
             </p>
@@ -43,10 +43,10 @@
     <section class="bg-gray-50 py-24">
       <div class="mx-auto max-w-7xl px-6">
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">Key Features</h2>
+          <h2 ref="featuresTitle" class="text-3xl font-bold text-gray-900 mb-4">Key Features</h2>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div ref="featuresGrid" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div class="flex gap-4">
             <div class="flex-shrink-0">
               <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -138,13 +138,13 @@
     <section class="bg-white py-24">
       <div class="mx-auto max-w-7xl px-6">
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">Technology Stack</h2>
-          <p class="text-lg text-gray-600">
+          <h2 ref="techTitle" class="text-3xl font-bold text-gray-900 mb-4">Technology Stack</h2>
+          <p ref="techDescription" class="text-lg text-gray-600">
             Built with modern, cutting-edge technologies for the best user experience
           </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div ref="techGrid" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <!-- Frontend Framework -->
           <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
             <div class="flex items-center gap-4 mb-4">
@@ -303,7 +303,250 @@
 </template>
 
 <script setup lang="ts">
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
 useHead({
   title: 'About - Virtual City 360° Tours',
+})
+
+// Template refs
+const heroTitle = ref<HTMLElement | null>(null)
+const heroDescription = ref<HTMLElement | null>(null)
+const heroBlob1 = ref<HTMLElement | null>(null)
+const heroBlob2 = ref<HTMLElement | null>(null)
+
+const missionTitle = ref<HTMLElement | null>(null)
+const missionContent = ref<HTMLElement | null>(null)
+
+const featuresTitle = ref<HTMLElement | null>(null)
+const featuresGrid = ref<HTMLElement | null>(null)
+
+const techTitle = ref<HTMLElement | null>(null)
+const techDescription = ref<HTMLElement | null>(null)
+const techGrid = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+  // Hero Section Animations
+  if (heroTitle.value) {
+    // Split title into words for stagger animation
+    const words = heroTitle.value.textContent?.split(' ') || []
+    heroTitle.value.innerHTML = words.map(word => `<span class="inline-block" style="opacity: 0;">${word}</span>`).join(' ')
+    
+    gsap.to(heroTitle.value.querySelectorAll('span'), {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: heroTitle.value,
+        start: 'top 80%',
+      }
+    })
+  }
+
+  if (heroDescription.value) {
+    gsap.from(heroDescription.value, {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      delay: 0.5,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: heroDescription.value,
+        start: 'top 80%',
+      }
+    })
+  }
+
+  // Parallax effect for background blobs
+  if (heroBlob1.value) {
+    gsap.to(heroBlob1.value, {
+      y: 200,
+      scrollTrigger: {
+        trigger: heroBlob1.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.5,
+      }
+    })
+  }
+
+  if (heroBlob2.value) {
+    gsap.to(heroBlob2.value, {
+      y: -150,
+      scrollTrigger: {
+        trigger: heroBlob2.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 2,
+      }
+    })
+  }
+
+  // Mission Section Animations
+  if (missionTitle.value) {
+    gsap.from(missionTitle.value, {
+      opacity: 0,
+      scale: 0.8,
+      y: 30,
+      duration: 0.8,
+      ease: 'back.out(1.7)',
+      scrollTrigger: {
+        trigger: missionTitle.value,
+        start: 'top 75%',
+      }
+    })
+  }
+
+  if (missionContent.value) {
+    const paragraphs = missionContent.value.querySelectorAll('p')
+    gsap.from(paragraphs, {
+      opacity: 0,
+      y: 50,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: missionContent.value,
+        start: 'top 70%',
+      }
+    })
+  }
+
+  // Features Section Animations
+  if (featuresTitle.value) {
+    gsap.from(featuresTitle.value, {
+      opacity: 0,
+      y: -50,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: featuresTitle.value,
+        start: 'top 75%',
+      }
+    })
+  }
+
+  if (featuresGrid.value) {
+    const featureCards = featuresGrid.value.querySelectorAll('.flex.gap-4')
+    
+    gsap.from(featureCards, {
+      opacity: 0,
+      y: 60,
+      rotationY: -15,
+      duration: 0.8,
+      stagger: {
+        amount: 0.6,
+        from: 'start',
+      },
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: featuresGrid.value,
+        start: 'top 70%',
+      }
+    })
+
+    // Icon bounce effect
+    featureCards.forEach((card) => {
+      const icon = card.querySelector('.w-10.h-10')
+      if (icon) {
+        gsap.from(icon, {
+          scale: 0,
+          rotation: 360,
+          duration: 0.6,
+          ease: 'back.out(2)',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 75%',
+          }
+        })
+      }
+    })
+  }
+
+  // Technology Stack Section Animations
+  if (techTitle.value) {
+    // Character-by-character reveal
+    const chars = techTitle.value.textContent?.split('') || []
+    techTitle.value.innerHTML = chars.map(char => 
+      char === ' ' ? ' ' : `<span class="inline-block" style="opacity: 0;">${char}</span>`
+    ).join('')
+    
+    gsap.to(techTitle.value.querySelectorAll('span'), {
+      opacity: 1,
+      y: 0,
+      duration: 0.05,
+      stagger: 0.03,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: techTitle.value,
+        start: 'top 75%',
+      }
+    })
+  }
+
+  if (techDescription.value) {
+    gsap.from(techDescription.value, {
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      delay: 0.5,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: techDescription.value,
+        start: 'top 75%',
+      }
+    })
+  }
+
+  if (techGrid.value) {
+    const techCards = techGrid.value.querySelectorAll('.bg-white.rounded-xl')
+    
+    // Cascade effect - alternating from left and right
+    techCards.forEach((card, index) => {
+      const fromLeft = index % 2 === 0
+      
+      gsap.from(card, {
+        opacity: 0,
+        x: fromLeft ? -100 : 100,
+        rotationY: fromLeft ? -20 : 20,
+        duration: 0.8,
+        delay: index * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 80%',
+        }
+      })
+
+      // Animate list items inside each card
+      const listItems = card.querySelectorAll('li')
+      gsap.from(listItems, {
+        opacity: 0,
+        x: -20,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 75%',
+        }
+      })
+
+      // Subtle floating animation
+      gsap.to(card, {
+        y: -10,
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: index * 0.2,
+      })
+    })
+  }
 })
 </script>
