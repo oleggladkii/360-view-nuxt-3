@@ -22,7 +22,7 @@
           </NuxtLink>
         </div>
         <MiniMap
-          :gpx-url="tour.gpx_path"
+          :gpx-data="tour.gpx_text"
         />
       </div>
 

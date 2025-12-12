@@ -275,8 +275,6 @@ const { data: tour, error } = await useFetch<Tour>(`/api/tours/${tourId.value}/v
   headers: useRequestHeaders(["cookie"]),
 });
 
-console.log("data tour", tour.value);
-
 if (error.value) {
   console.error("Failed to load tour:", error.value);
   if (import.meta.client) {

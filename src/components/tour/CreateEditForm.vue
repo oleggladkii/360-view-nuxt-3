@@ -155,8 +155,9 @@
           <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="tour-preview-file">
             Preview Image
           </label>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center justify-between gap-2">
             <input
+              v-if="!form.preview_url || v$.preview_url.$error"
               id="tour-preview-file"
               type="file"
               accept="image/*"
@@ -164,6 +165,7 @@
               :class="{ 'border-red-500': v$.preview_url.$error }"
               @change="handlePreviewUpload"
             >
+            <p v-else class="text-xs text-green-600">Preview image uploaded</p>
             <button
               v-if="form.preview_url && previewStoragePath"
               type="button"
@@ -175,7 +177,6 @@
           </div>
           <p v-if="uploadingPreview" class="text-xs text-blue-600">Uploading Preview...</p>
           <p v-if="deletingPreview" class="text-xs text-blue-600">Deleting Preview...</p>
-          <p v-if="form.preview_url && !v$.preview_url.$error" class="text-xs text-green-600">Preview image uploaded</p>
           <p v-if="v$.preview_url.$error" class="text-xs text-red-600">
             {{ previewUrlErrorMessage }}
           </p>
@@ -188,8 +189,9 @@
           <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="tour-gpx-file">
             GPX File
           </label>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center justify-between gap-2">
             <input
+              v-if="!form.gpx_path || v$.gpx_path.$error"
               id="tour-gpx-file"
               type="file"
               accept=".gpx"
@@ -197,6 +199,7 @@
               :class="{ 'border-red-500': v$.gpx_path.$error }"
               @change="handleGpxUpload"
             >
+            <p v-else class="text-xs text-green-600">GPX file uploaded</p>
             <button
               v-if="form.gpx_path && gpxStoragePath"
               type="button"
@@ -208,7 +211,6 @@
           </div>
           <p v-if="uploadingGpx" class="text-xs text-blue-600">Uploading GPX...</p>
           <p v-if="deletingGpx" class="text-xs text-blue-600">Deleting GPX...</p>
-          <p v-if="form.gpx_path && !v$.gpx_path.$error" class="text-xs text-green-600">GPX file uploaded</p>
           <p v-if="v$.gpx_path.$error" class="text-xs text-red-600">
             {{ gpxPathErrorMessage }}
           </p>
@@ -218,8 +220,9 @@
           <label class="text-sm font-semibold uppercase tracking-wide text-gray-400" for="tour-video-file">
             360° Video File
           </label>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center justify-between align-center gap-2">
             <input
+              v-if="!form.video_url || v$.video_url.$error"
               id="tour-video-file"
               type="file"
               accept="video/*"
@@ -227,6 +230,7 @@
               :class="{ 'border-red-500': v$.video_url.$error }"
               @change="handleVideoUpload"
             >
+            <p v-else class="text-xs text-green-600">Video uploaded</p>
             <button
               v-if="form.video_url && videoStoragePath"
               type="button"
@@ -238,7 +242,6 @@
           </div>
           <p v-if="uploadingVideo" class="text-xs text-blue-600">Uploading Video...</p>
           <p v-if="deletingVideo" class="text-xs text-blue-600">Deleting Video...</p>
-          <p v-if="form.video_url && !v$.video_url.$error" class="text-xs text-green-600">Video uploaded</p>
           <p v-if="v$.video_url.$error" class="text-xs text-red-600">
             {{ videoUrlErrorMessage }}
           </p>

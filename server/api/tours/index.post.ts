@@ -17,8 +17,14 @@ export default defineEventHandler(async (event) => {
     tour_date?: string;
     time_of_day?: "day" | "night";
     gpx_path?: string;
+    gpx_text?: string;
     video_url?: string;
   }>(event);
+
+  if (!body.gpx_text && body.gpx_path) {
+    const points = await parseGpx(body.gpx_path);
+    body.gpx_text = JSON.stringify(points);
+  }
 
   const client = await serverSupabaseClient(event);
 

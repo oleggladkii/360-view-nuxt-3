@@ -1,5 +1,6 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 import type { SupabaseJwtPayload } from "~/interfaces/SupabaseJwtPayload";
+import { parseGpx } from "~~/server/utils/gpx";
 
 export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event);
@@ -12,6 +13,11 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, "id");
   const body = await readBody(event);
   const client = await serverSupabaseClient(event);
+
+  if (!body.gpx_text && body.gpx_path) {
+    const points = await parseGpx(body.gpx_path);
+    body.gpx_text = JSON.stringify(points);
+  }
 
   const { data, error } = await client
     .from("tours")

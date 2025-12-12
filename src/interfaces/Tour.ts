@@ -11,6 +11,7 @@ export interface Tour {
   country: string;
   city: string;
   gpx_path: string;
+  gpx_text: string;
   video_url?: string;
   user?: {
     full_name?: string;
