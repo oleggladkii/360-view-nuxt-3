@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
   // Then fetch the tour with updated views
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (client as any)
+  const { data: tour, error } = await (client as any)
     .from("tours")
     .select("*")
     .eq("id", tourId)
@@ -30,10 +30,21 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: error.message });
   }
 
-  if (!data) {
+  if (!tour) {
     throw createError({ statusCode: 404, statusMessage: "Tour not found" });
   }
 
-  return data;
+  // Fetch author details
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: author } = await (client as any)
+    .from("public_profiles")
+    .select("full_name, avatar_url")
+    .eq("id", tour.user_id)
+    .single();
+
+  return {
+    ...tour,
+    user: author,
+  };
 });
 

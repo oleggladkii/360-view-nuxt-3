@@ -64,41 +64,103 @@
               <div ref="aboutDesc" class="mt-4 text-lg leading-relaxed text-gray-600 opacity-0 translate-y-4" v-html="tour.description || 'No description provided for this tour.'" />
             </div>
 
+            <!-- Share Section -->
+            <div class="flex items-center justify-between rounded-2xl bg-indigo-50 p-6 opacity-0 translate-y-4" ref="shareSection">
+              <div>
+                <h3 class="text-lg font-bold text-gray-900">Share This Tour</h3>
+              </div>
+              <button 
+                @click="shareTour"
+                class="group relative flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-indigo-600 hover:text-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <span>Copy Link</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 transition-transform group-hover:scale-110">
+                  <path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+
             <div ref="creatorCard" class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl opacity-0 translate-y-4">
-              <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+              <div v-if="tour.user?.avatar_url" class="h-12 w-12 rounded-full overflow-hidden">
+                <img :src="getProxiedImageUrl(tour.user.avatar_url) || undefined" :alt="tour.user.full_name || 'Creator'" class="h-full w-full object-cover" />
+              </div>
+              <div v-else class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                   <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
                 </svg>
               </div>
               <div>
                 <p class="text-sm font-medium text-gray-900">Created by</p>
-                <p class="text-base text-gray-600">Tour Creator</p>
+                <p class="text-base text-gray-600">{{ tour.user?.full_name || 'Unknown User' }}</p>
               </div>
             </div>
           </div>
 
           <!-- Sidebar Stats -->
           <div ref="sidebar" class="space-y-6 opacity-0 translate-y-4">
-            <div class="rounded-2xl bg-gray-50 p-6">
-              <h3 class="font-semibold text-gray-900 mb-4">Tour Details</h3>
-              <dl class="space-y-4">
-                <div class="flex justify-between">
-                  <dt class="text-gray-500">Date</dt>
-                  <dd class="font-medium text-gray-900">{{ tour.tour_date ? new Date(tour.tour_date).toLocaleDateString() : 'N/A' }}</dd>
+            <div 
+              class="group relative overflow-hidden rounded-3xl bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-gray-100 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:ring-gray-200"
+            >
+              <!-- Decorative background splash -->
+              <div class="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-50 to-purple-50 blur-2xl transition-all duration-500 group-hover:scale-150" />
+              
+              <div class="relative z-10">
+                <div class="mb-8">
+                  <h3 class="text-xl font-bold text-gray-900">Tour Details</h3>
                 </div>
-                <div class="flex justify-between">
-                  <dt class="text-gray-500">Views</dt>
-                  <dd class="font-medium text-gray-900">{{ tour.views_count || 0 }}</dd>
+
+                <div class="space-y-4">
+                  <!-- Date -->
+                  <div class="detail-item flex items-center gap-3 opacity-0 translate-x-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600 transition-transform duration-300 group-hover:scale-110">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                        <path d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5 .75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5 .75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5 .75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5 .75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5 .75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5 .75.75 0 000 1.5z" />
+                        <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">
+                      {{ tour.tour_date ? new Date(tour.tour_date).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'N/A' }}
+                    </div>
+                  </div>
+                  
+                  <!-- Views -->
+                  <div class="detail-item flex items-center gap-3 opacity-0 translate-x-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition-transform duration-300 group-hover:scale-110">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                        <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">
+                      {{ tour.views_count ? tour.views_count.toLocaleString() : 0 }} views
+                    </div>
+                  </div>
+
+                  <!-- Location -->
+                  <div class="detail-item flex items-center gap-3 opacity-0 translate-x-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition-transform duration-300 group-hover:scale-110">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                        <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="text-sm font-medium text-gray-700">
+                      {{ tour.city }}, {{ tour.country }}
+                    </div>
+                  </div>
                 </div>
-              </dl>
+              </div>
             </div>
 
             <ClientOnly>
               <div v-if="isCurrentUser" class="flex flex-col gap-3">
                 <NuxtLink
                   :to="`/tours/${tour.id}/edit`"
-                  class="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+                  class="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md hover:-translate-y-0.5"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="mr-2 h-4 w-4">
+                    <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                    <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                  </svg>
                   Edit Tour
                 </NuxtLink>
               </div>
@@ -123,17 +185,19 @@ import gsap from 'gsap';
 import { useWindowScroll } from '@vueuse/core';
 
 const { y } = useWindowScroll();
+const { getProxiedImageUrl } = useImageProxy();
 
 // Refs for animations
-const heroImage = ref(null);
-const badge = ref(null);
-const title = ref(null);
-const location = ref(null);
-const cta = ref(null);
-const aboutTitle = ref(null);
-const aboutDesc = ref(null);
-const creatorCard = ref(null);
-const sidebar = ref(null);
+const heroImage = ref<HTMLElement | null>(null);
+const badge = ref<HTMLElement | null>(null);
+const title = ref<HTMLElement | null>(null);
+const location = ref<HTMLElement | null>(null);
+const cta = ref<HTMLElement | null>(null);
+const aboutTitle = ref<HTMLElement | null>(null);
+const aboutDesc = ref<HTMLElement | null>(null);
+const creatorCard = ref<HTMLElement | null>(null);
+const shareSection = ref<HTMLElement | null>(null);
+const sidebar = ref<HTMLElement | null>(null);
 
 // Parallax effect
 watch(y, (newY) => {
@@ -165,8 +229,37 @@ onMounted(() => {
   if (aboutTitle.value) contentTl.to(aboutTitle.value, { opacity: 1, y: 0 });
   if (aboutDesc.value) contentTl.to(aboutDesc.value, { opacity: 1, y: 0 }, "-=0.4");
   if (creatorCard.value) contentTl.to(creatorCard.value, { opacity: 1, y: 0 }, "-=0.4");
-  if (sidebar.value) contentTl.to(sidebar.value, { opacity: 1, y: 0 }, "-=0.4");
+  if (shareSection.value) contentTl.to(shareSection.value, { opacity: 1, y: 0 }, "-=0.4");
+  if (sidebar.value) {
+    contentTl.to(sidebar.value, { opacity: 1, y: 0 }, "-=0.4");
+    
+    // Animate detail items staggering in
+    const items = sidebar.value.querySelectorAll('.detail-item');
+    if (items.length) {
+      contentTl.to(items, {
+        opacity: 1,
+        x: 0,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: "back.out(1.5)"
+      }, "-=0.3");
+    }
+  }
 });
+
+const shareTour = () => {
+  if (import.meta.client) {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        toast.success({ message: "Link copied to clipboard! 📋" });
+      })
+      .catch((err) => {
+        console.error('Could not copy text: ', err);
+        toast.error({ message: "Failed to copy link" });
+      });
+  }
+};
 
 const route = useRoute();
 const toast = useToast();
@@ -181,6 +274,8 @@ const tourId = computed(() => route.params.id as string);
 const { data: tour, error } = await useFetch<Tour>(`/api/tours/${tourId.value}/view`, {
   headers: useRequestHeaders(["cookie"]),
 });
+
+console.log("data tour", tour.value);
 
 if (error.value) {
   console.error("Failed to load tour:", error.value);

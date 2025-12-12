@@ -34,27 +34,36 @@
               >
                 <span class="absolute -inset-1.5"/>
                 <span class="sr-only">Open user menu</span>
-                <img
-                  v-if="avatarUrl && isProxiedUrl"
-                  :src="avatarUrl"
-                  :alt="userInitial"
-                  class="h-8 w-8 rounded-full border-2 border-white object-cover"
-                >
-                <NuxtImg
-                  v-else-if="avatarUrl"
-                  :src="avatarUrl"
-                  :alt="userInitial"
-                  width="32"
-                  height="32"
-                  class="h-8 w-8 rounded-full border-2 border-white object-cover"
-                  fit="cover"
-                />
-                <div
-                  v-else
-                  class="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center text-white font-medium"
-                >
-                  {{ userInitial }}
-                </div>
+                <ClientOnly>
+                  <img
+                    v-if="avatarUrl && isProxiedUrl"
+                    :src="avatarUrl"
+                    :alt="userInitial"
+                    class="h-8 w-8 rounded-full border-2 border-white object-cover"
+                  >
+                  <NuxtImg
+                    v-else-if="avatarUrl"
+                    :src="avatarUrl"
+                    :alt="userInitial"
+                    width="32"
+                    height="32"
+                    class="h-8 w-8 rounded-full border-2 border-white object-cover"
+                    fit="cover"
+                  />
+                  <div
+                    v-else
+                    class="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center text-white font-medium"
+                  >
+                    {{ userInitial }}
+                  </div>
+                  <template #fallback>
+                    <div
+                      class="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center text-white font-medium"
+                    >
+                      {{ userInitial }}
+                    </div>
+                  </template>
+                </ClientOnly>
               </button>
 
               <div
