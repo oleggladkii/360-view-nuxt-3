@@ -284,6 +284,7 @@ if (error.value) {
 }
 
 const isCurrentUser = computed(() => {
-  return auth.user?.id === tour.value?.user_id;
+  const isAdminOrSuperAdmin = auth.userRole === 'admin' || auth.userRole === 'superadmin';
+  return isAdminOrSuperAdmin || auth.user?.id === tour.value?.user_id;
 });
 </script>

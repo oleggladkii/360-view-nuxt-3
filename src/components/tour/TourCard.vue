@@ -53,7 +53,7 @@
 
       <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
         <NuxtLink
-          :to="`/tours/${tour.id}`"
+          :to="`/tours/${tour.url_slug}`"
           class="text-sm font-semibold text-blue-600 hover:text-blue-500 flex items-center gap-1"
         >
           View Tour

@@ -19,11 +19,27 @@ export default defineEventHandler(async (event) => {
     body.gpx_text = JSON.stringify(points);
   }
 
-  const { data, error } = await client
+  // Fetch user role
+  const { data: userData } = await client
+    .from("users")
+    .select("role")
+    .eq("id", userId)
+    .single();
+
+  const userRole = userData?.role;
+  const isAdminOrSuperAdmin = userRole === 'admin' || userRole === 'superadmin';
+
+  let query = client
     .from("tours")
     .update(body)
-    .eq("id", id)
-    .eq("user_id", userId)
+    .eq("id", id);
+
+  // If not admin/superadmin, restrict to own tours
+  if (!isAdminOrSuperAdmin) {
+    query = query.eq("user_id", userId);
+  }
+
+  const { data, error } = await query
     .select("*")
     .single();
 

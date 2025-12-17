@@ -13,10 +13,32 @@ export const useAuthStore = defineStore(
     const supabaseUser = useSupabaseUser();
 
     const user = ref<SupabaseUser | null>(supabaseUser.value as SupabaseUser | null);
+    const userRole = ref<string | null>(null);
     const isLoggedIn = computed(() => !!user.value);
+
+    const fetchUserRole = async () => {
+      if (!user.value?.id) {
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.value.id)
+        .single();
+
+      if (data) {
+        userRole.value = data.role;
+      }
+    };
 
     const setUser = (data: SupabaseUser | null) => {
       user.value = data;
+      if (data) {
+        fetchUserRole();
+      } else {
+        userRole.value = null;
+      }
     };
 
     const logout = async () => {
@@ -72,11 +94,16 @@ export const useAuthStore = defineStore(
 
     const init = () => {
       user.value = supabaseUser.value as SupabaseUser | null;
+      if (user.value) {
+        fetchUserRole();
+      }
     };
 
     return {
       isLoggedIn,
       user,
+      userRole,
+      fetchUserRole,
       setUser,
       logout,
       loginWithEmail,

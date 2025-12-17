@@ -1,3 +1,9 @@
+export enum RolesEnum {
+  USER = 'user',
+  ADMIN = 'admin',
+  SUPERADMIN = 'superadmin',
+}
+
 export interface Profile {
   id: string;
   email: string | null;
@@ -10,6 +16,7 @@ export interface Profile {
   instagram: string | null;
   facebook: string | null;
   linkedin: string | null;
+  role: RolesEnum;
   created_at: string;
   updated_at: string;
 }

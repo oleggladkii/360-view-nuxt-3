@@ -74,7 +74,7 @@ const loadTour = async () => {
     };
   } catch (error) {
     console.error("Failed to load tour:", error);
-    toast.error({ message: "Failed to load tour. Please try again." });
+    toast.error({ message: (error as any)?.data?.message || "Failed to load tour. Please try again." });
     await router.push("/profile?tab=tours");
   } finally {
     isLoading.value = false;
@@ -93,8 +93,7 @@ const handleSubmit = async (payload: Record<string, unknown>) => {
     toast.success({ message: "Tour updated successfully." });
     await router.push("/profile?tab=tours");
   } catch (error) {
-    console.error("Failed to update tour:", error);
-    toast.error({ message: "Failed to update tour. Please try again." });
+    toast.error({ message: (error as any)?.data?.message || "Failed to update tour. Please try again." });
   } finally {
     isSubmitting.value = false;
   }

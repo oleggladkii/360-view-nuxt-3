@@ -1,12 +1,32 @@
 import { serverSupabaseClient } from "#supabase/server";
 
+const isUUID = (str: string) => {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+};
+
 export default defineEventHandler(async (event) => {
-  const tourId = getRouterParam(event, "id");
-  if (!tourId) {
-    throw createError({ statusCode: 400, statusMessage: "Tour ID is required" });
+  const param = getRouterParam(event, "id");
+  if (!param) {
+    throw createError({ statusCode: 400, statusMessage: "Tour ID or Slug is required" });
   }
 
   const client = await serverSupabaseClient(event);
+  let tourId = param;
+
+  // If not a UUID, try to resolve it as a slug
+  if (!isUUID(param)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (client as any)
+      .from("tours")
+      .select("id")
+      .eq("url_slug", param)
+      .single();
+
+    if (error || !data) {
+      throw createError({ statusCode: 404, statusMessage: "Tour not found" });
+    }
+    tourId = data.id;
+  }
 
   // Increment views first
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
